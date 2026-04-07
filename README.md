@@ -80,10 +80,7 @@ loads at boot start.
 
 ## Compatibility
 
-Tested on Windows 10 22H2 and Windows 11 25H2.
-Compatible range 19041 through current.
-LTSC 2021 RTM (19044.1288) requires the ExFreePoolWithTag 
-build due to missing ExFreePool2 export on that baseline.
+Tested on Windows 11 25H2.
 
 ## Building
 
