@@ -1,4 +1,4 @@
-﻿
+
 #include <ntifs.h>
 #include <ntddk.h>
 #include <windef.h>
@@ -10,6 +10,8 @@
 #pragma warning(disable:4189)
 
 #pragma warning(disable: 4201) // nameless struct/union
+
+#pragma warning(disable:4996) // API Is depracted
 
 
 #define PROTECT_FLAG_WRITE      0x00000001
@@ -1038,7 +1040,7 @@ static NTSTATUS GetCurrentUserSidString(
 
     status = RtlConvertSidToUnicodeString(SidString, user->User.Sid, TRUE);
 
-    ExFreePool2(user, DRIVER_TAG, NULL, 0);
+    ExFreePoolWithTag(user, DRIVER_TAG);
 
     return status;
 }
@@ -1090,8 +1092,8 @@ BOOLEAN ChkInt(VOID)
     // Get image name
     ULONG bufferSize = sizeof(UNICODE_STRING) + (MAX_PATH * sizeof(WCHAR));
 
-    PUNICODE_STRING imageName = (PUNICODE_STRING)ExAllocatePool2(
-        POOL_FLAG_NON_PAGED,
+    PUNICODE_STRING imageName = (PUNICODE_STRING)ExAllocatePoolWithTag(
+        NonPagedPoolNx,
         bufferSize,
         DRIVER_TAG
     );
@@ -1110,7 +1112,7 @@ BOOLEAN ChkInt(VOID)
     );
     if (!NT_SUCCESS(status) || !imageName->Buffer || imageName->Length == 0)
     {
-        ExFreePool2(imageName, DRIVER_TAG, NULL, 0);
+        ExFreePoolWithTag(imageName, DRIVER_TAG);
         ZwClose(hProcess);
         return FALSE;
     }
@@ -1140,7 +1142,7 @@ BOOLEAN ChkInt(VOID)
         }
     }
 
-    ExFreePool2(imageName, DRIVER_TAG, NULL, 0);
+    ExFreePoolWithTag(imageName, DRIVER_TAG);
 
     if (!isServices)
     {
@@ -1187,8 +1189,8 @@ BOOLEAN ChkInt(VOID)
         return FALSE;
 
     // Get parent image name
-    PUNICODE_STRING parentName = (PUNICODE_STRING)ExAllocatePool2(
-        POOL_FLAG_NON_PAGED,
+    PUNICODE_STRING parentName = (PUNICODE_STRING)ExAllocatePoolWithTag(
+        NonPagedPoolNx,
         bufferSize,
         DRIVER_TAG
     );
@@ -1209,7 +1211,7 @@ BOOLEAN ChkInt(VOID)
 
     if (!NT_SUCCESS(status) || !parentName->Buffer || parentName->Length == 0)
     {
-        ExFreePool2(parentName, DRIVER_TAG, NULL, 0);
+        ExFreePoolWithTag(parentName, DRIVER_TAG);
         return FALSE;
     }
 
@@ -1235,7 +1237,7 @@ BOOLEAN ChkInt(VOID)
         }
     }
 
-    ExFreePool2(parentName, DRIVER_TAG, NULL, 0);
+    ExFreePoolWithTag(parentName, DRIVER_TAG);
     return isWininit;
 }
 
@@ -1293,7 +1295,7 @@ static NTSTATUS FastUnicodeToUpper(
     if (Destination->Buffer)
     {
         RtlSecureZeroMemory(Destination->Buffer, Destination->MaximumLength);
-        ExFreePool2(Destination->Buffer, DRIVER_TAG, NULL, 0);
+        ExFreePoolWithTag(Destination->Buffer, DRIVER_TAG);
         Destination->Buffer = NULL;
         Destination->MaximumLength = 0;
         Destination->Length = 0;
@@ -1301,8 +1303,8 @@ static NTSTATUS FastUnicodeToUpper(
 
     // Always allocate fresh
     Destination->MaximumLength = Source->Length + sizeof(WCHAR);
-    Destination->Buffer = (PWCH)ExAllocatePool2(
-        POOL_FLAG_NON_PAGED,
+    Destination->Buffer = (PWCH)ExAllocatePoolWithTag(
+        NonPagedPoolNx,
         Destination->MaximumLength,
         DRIVER_TAG
     );
@@ -1392,7 +1394,7 @@ static NTSTATUS AddToHashTable(_Inout_ PHASH_TABLE Table, ULONG Hash, ULONG Entr
 
     ULONG BucketIndex = Hash % HASH_TABLE_SIZE;
 
-    PHASH_NODE NewNode = (PHASH_NODE)ExAllocatePool2(POOL_FLAG_NON_PAGED, sizeof(HASH_NODE), DRIVER_TAG);
+    PHASH_NODE NewNode = (PHASH_NODE)ExAllocatePoolWithTag(NonPagedPoolNx, sizeof(HASH_NODE), DRIVER_TAG);
     if (!NewNode) {
         return STATUS_INSUFFICIENT_RESOURCES;
     }
@@ -1482,7 +1484,7 @@ static VOID CleanupHashTable(_Inout_ PHASH_TABLE Table)
         while (current) {
             PHASH_NODE toFree = current;
             current = current->Next;
-            ExFreePool2(toFree, DRIVER_TAG, NULL, 0);
+            ExFreePoolWithTag(toFree, DRIVER_TAG);
             bucketCount++;
         }
 
@@ -1697,7 +1699,7 @@ static BOOLEAN IsOperationBlockedOptimized(
 
 cleanup:
     if (valueUpper.Buffer)
-        ExFreePool2(valueUpper.Buffer, DRIVER_TAG, NULL, 0);
+        ExFreePoolWithTag(valueUpper.Buffer, DRIVER_TAG);
 
     return blocked;
 }
@@ -1799,7 +1801,7 @@ static NTSTATUS RegistryCallback(
     if (!NT_SUCCESS(status))
     {
         if (valueUpper.Buffer)
-            ExFreePool2(valueUpper.Buffer, DRIVER_TAG, NULL, 0);
+            ExFreePoolWithTag(valueUpper.Buffer, DRIVER_TAG);
         return STATUS_SUCCESS;
     }
 
@@ -1885,7 +1887,7 @@ static NTSTATUS RegistryCallback(
             else
                 pathMatches = RtlEqualUnicodeString(&hkcuFullPathUpper, &keyPathUpper, TRUE);
 
-            ExFreePool2(hkcuFullPathUpper.Buffer, DRIVER_TAG, NULL, 0);
+            ExFreePoolWithTag(hkcuFullPathUpper.Buffer, DRIVER_TAG);
 
             if (!pathMatches)
                 continue;
@@ -1913,9 +1915,9 @@ static NTSTATUS RegistryCallback(
     }
 
 cleanup:
-    ExFreePool2(keyPathUpper.Buffer, DRIVER_TAG, NULL, 0);
+    ExFreePoolWithTag(keyPathUpper.Buffer, DRIVER_TAG);
     if (valueUpper.Buffer)
-        ExFreePool2(valueUpper.Buffer, DRIVER_TAG, NULL, 0);
+        ExFreePoolWithTag(valueUpper.Buffer, DRIVER_TAG);
 
     return result;
 }
@@ -1963,12 +1965,12 @@ static VOID DriverUnload(_In_ PDRIVER_OBJECT DriverObject)
         PREGISTRY_PROTECTION_ENTRY entry = &g_UnifiedProtections[i];
         if (entry->KeyPathUpper.Buffer)
         {
-            ExFreePool2(entry->KeyPathUpper.Buffer, DRIVER_TAG, NULL, 0);
+            ExFreePoolWithTag(entry->KeyPathUpper.Buffer, DRIVER_TAG);
             entry->KeyPathUpper.Buffer = NULL;
         }
         if (entry->ValueNameUpper.Buffer)
         {
-            ExFreePool2(entry->ValueNameUpper.Buffer, DRIVER_TAG, NULL, 0);
+            ExFreePoolWithTag(entry->ValueNameUpper.Buffer, DRIVER_TAG);
             entry->ValueNameUpper.Buffer = NULL;
         }
     }
@@ -2052,12 +2054,12 @@ NTSTATUS DriverEntry(
             PREGISTRY_PROTECTION_ENTRY entry = &g_UnifiedProtections[i];
             if (entry->KeyPathUpper.Buffer)
             {
-                ExFreePool2(entry->KeyPathUpper.Buffer, DRIVER_TAG, NULL, 0);
+                ExFreePoolWithTag(entry->KeyPathUpper.Buffer, DRIVER_TAG);
                 entry->KeyPathUpper.Buffer = NULL;
             }
             if (entry->ValueNameUpper.Buffer)
             {
-                ExFreePool2(entry->ValueNameUpper.Buffer, DRIVER_TAG, NULL, 0);
+                ExFreePoolWithTag(entry->ValueNameUpper.Buffer, DRIVER_TAG);
                 entry->ValueNameUpper.Buffer = NULL;
             }
         }
