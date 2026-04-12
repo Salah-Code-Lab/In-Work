@@ -63,6 +63,7 @@ After DriverEntry completes, ZwProtectVirtualMemory marks the
 protection tables and callback cookie as read only. No kernel 
 mode attacker can patch the tables in memory to silently remove 
 entries. On unload write permissions are restored before cleanup.
+Note:Sophisticated Attackers can still Bypass this quite Easily Actually
 
 ## Builds
 
