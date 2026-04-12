@@ -69,7 +69,7 @@ Note: Sophisticated or Normal Attackers can still Bypass this quite Easily Actua
 
 Win10 LTSC 21H2.
 
-May be Able to Support (22H2, 23H2, 24H2, 25H2).
+May be Able to Support (1903, 1909, 20H2, 22H2, 23H2, 24H2, 25H2).
 
 Though If the user is going to run a Modern Version of Windows 
 it is best to Compile the Win11 Version of the Code
