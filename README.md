@@ -71,6 +71,12 @@ Tested on Windows 11 25H2.
 
 May be able to Support (23H2, 24H2).
 
+If the user is going to Run a Older Version of Windows (e.g Win10) then it is best to 
+Use the Win10 source Code branch 
+since This version can cause issues that can be 
+Failure to Start on load:
+E.g The Current Procedure Couldn't Be Found.
+
 ## Building Instructions
 
 Requirements:
