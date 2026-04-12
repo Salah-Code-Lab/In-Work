@@ -68,7 +68,8 @@ Note: Sophisticated or Normal Attackers can still Bypass this quite Easily Actua
 ## Compatibility
 
 Tested on Windows 11 25H2.
-Win10 LTSC 21H2
+
+Win10 LTSC 21H2.
 
 ## Building Instructions
 
