@@ -59,36 +59,36 @@ HKCU protection table.
 
 ## Memory protection
 
-After DriverEntry completes, ZwProtectVirtualMemory marks the 
-protection tables and callback cookie as read only. No kernel 
-mode attacker can patch the tables in memory to silently remove 
-entries. On unload write permissions are restored before cleanup.
-Note:Sophisticated Attackers can still Bypass this quite Easily Actually
+After DriverEntry completes, ZwProtectVirtualMemory Flags the 
+protection tables and callback cookie as read only.
+On unload write permissions are restored before cleanup.
+Note: Sophisticated or Normal Attackers can still Bypass this quite Easily Actually
 
-## Builds
-
-Two configurations:
-
-Unloadable in Safe Mode only
-DriverUnload is NULL in normal boot. The driver cannot be 
-stopped via sc stop or ZwUnloadDriver during a live session. 
-Safe Mode gives you the unload path for maintenance.
-
-Unloadable Mid Session
-Registers DriverUnload unconditionally. You can run sc stop 
-RegFilter any time. Driver comes back on next boot since it 
-loads at boot start.
 
 ## Compatibility
 
 Tested on Windows 11 25H2.
+Win10 LTSC 21H2
 
-## Building
+## Building Instructions
 
-Built with WDK. Target x64. Test sign or submit for WHQL 
-depending on your use case. Enable testsigning if running 
-a test signed build:
+Requirements:
+VS2022 
+Latest WDK (preferably)
+after Opening VS2022 
+Click on View in the Top Panel
+Then Click on solution Explorer 
+afterwards Right click the Source Files In the Solution Explorer
+Then hover to Add then click on New Item Name it whatever what you need 
+but make sure it is a .c file 
+then paste the code then Build it
 
+## How To Run
+After Building the Driver which needs 
+VS2022 and the WDK Installed
+test on Any OS that ranges from Win10 to Win11 any build May be Compatible 
+To actually Run the Driver In Windows Ensure 
+That test signing is on:
 bcdedit /set testsigning on
 
 ## Author
