@@ -74,7 +74,7 @@ What I mean by this is that:
 1- Allow on this Device bypasses for detected threats (Persistent Bootkits, WMI Persistent Threats, Rootkits)
 2- Allowing vulnerable drivers on your machine (BYOVD attacks, if the attacker was targeting RegFilter)
 3- Allowing malicious drivers to load on your machine (if the attacker was targeting RegFilter)
-+ other means 
+ + other means 
 
 But this driver isn't meant to counter other threats at the same level of rights (Ring 0, the Kernel). It is made to be resistant, which raises the cost for the attacker, but it is ultimately, at the end of the day, still bypassable. 
 
