@@ -64,6 +64,44 @@ protection tables and callback cookie as read only.
 On unload write permissions are restored before cleanup.
 Note: Sophisticated or Normal Attackers can still Bypass this quite Easily Actually
 
+## Accountability
+
+I know this may be a bit obvious and I even forgot to write it, but an important and crucial thing to mention is Accountability. 
+What I mean by this is that:
+
+# RegFilter will absolutely fail if you are allowing the following:
+
+1- Allow on this Device bypasses for detected threats (Persistent Bootkits, WMI Persistent Threats, Rootkits)
+2- Allowing vulnerable drivers on your machine (BYOVD attacks, if the attacker was targeting RegFilter)
+3- Allowing malicious drivers to load on your machine (if the attacker was targeting RegFilter)
+ + other means 
+
+But this driver isn't meant to counter other threats at the same level of rights (Ring 0, the Kernel). It is made to be resistant, which raises the cost for the attacker, but it is ultimately, at the end of the day, still bypassable. 
+
+## BUT
+
+# If the attacker reaches Kernel Context execution (e.g., loading a driver into the kernel successfully)
+OR
+# Has the ability to abuse current vulnerable drivers installed on the device (e.g., Anti-Cheats, known vulnerable services, etc.)
+
+Then RegFilter may already had failed and the one at fault here was the User for allowing them in the first place
+RegFilter isn't designed to counter these specifically, but to resist. This was an intentional design to not only show the user that he or she must be careful, but also to preserve system stability and avoid being invasive. Just once again, a reminder:
+
+# IF SIGNED!!!
+
+RegFilter is made for OS hardening and persistence prevention and should be used for protection. (AFTER it was auditted accordingly to the Use cases the Users own Needs)
+
+# If not signed
+
+It is then used for educational purposes and NOT mass deployment.
+
+RegFilter is not a complete protection solution (do not be mistaken; it is not complete on its own).
+RegFilter is not for:
+Countering APTs 
+Countering Zero Days
+Countering the user's own choices
+etc. etc.
+
 
 ## Compatibility
 
